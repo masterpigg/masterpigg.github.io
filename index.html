@@ -64,13 +64,21 @@
   }
   .profiles a:hover { border-color: var(--accent); color: var(--accent); }
 
-  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-  .filters button {
-    font: inherit; font-size: .85rem; cursor: pointer;
-    background: transparent; color: var(--muted);
-    border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px;
+  .jump { display: flex; flex-wrap: wrap; gap: 8px; }
+  .jump a {
+    color: var(--text); text-decoration: none; font-weight: 500; font-size: .9rem;
+    border: 1px solid var(--border); background: var(--card);
+    padding: 6px 12px; border-radius: 999px;
   }
-  .filters button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .jump a:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hobby { margin-top: 48px; scroll-margin-top: 16px; }
+  .hobby-head { border-top: 1px solid var(--border); padding-top: 24px; margin-bottom: 18px; }
+  .hobby-head h2 {
+    font-family: "Space Grotesk", Inter, sans-serif;
+    font-size: 1.6rem; margin: 0 0 6px; letter-spacing: -0.01em;
+  }
+  .hobby-head p { color: var(--muted); margin: 0 0 14px; max-width: 60ch; }
 
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
   .card {
@@ -83,7 +91,7 @@
   }
   .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-  .body h2 { font-size: 1.1rem; margin: 0; }
+  .body h3 { font-size: 1.1rem; margin: 0; }
   .status {
     font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;
     color: var(--accent); margin-left: 6px; vertical-align: 2px;
@@ -107,91 +115,110 @@
 <main>
   <header>
     <h1>Things I've made</h1>
-    <p class="intro">Games, tools, maps and 3D prints. Some are open source and some aren't, but you can try or download all of them from the links below.</p>
-    <nav class="profiles" id="profiles"></nav>
+    <p class="intro">Software, games and 3D prints. Some are open source and some aren't, but you can try or download all of them from the links below.</p>
+    <nav class="jump" id="jump" aria-label="Sections"></nav>
   </header>
 
-  <div class="filters" id="filters" role="group" aria-label="Filter projects"></div>
-  <section class="grid" id="grid"></section>
+  <div id="sections"></div>
 
   <footer>© <span id="year"></span> masterpigg</footer>
 </main>
 
 <script>
 /* ─────────────────────────────────────────────────────────────
-   EDIT HERE: your profiles and projects.
-   To add a project, copy one { ... } block and change it.
+   EDIT HERE: one block per hobby, each with its own projects.
+   - profiles: buttons under the section heading (MakerWorld, GitHub, itch.io…)
+   - To add a project, copy one { ... } block inside "projects".
    - image: optional path or URL to a screenshot (e.g. "img/wheel.jpg");
             if left out, the emoji is shown instead.
-   - links: first link is the highlighted button. Leave out any you
-            don't have (e.g. no "Source" for private repos).
+   - links: the first link is the highlighted button. A project's links
+            can point anywhere: MakerWorld, itch.io, GitHub, etc.
    - status: optional small label, e.g. "Coming soon" or "Beta".
+   To add a new hobby, copy a whole section block.
    ───────────────────────────────────────────────────────────── */
-const PROFILES = [
-  { label: "GitHub",    url: "https://github.com/masterpigg" },
-  { label: "MakerWorld", url: "https://makerworld.com/en/@masterpigg" },
-  // { label: "itch.io", url: "https://masterpigg.itch.io" },
-];
-
-const PROJECTS = [
+const SECTIONS = [
   {
-    title: "Realm Cartographer",
-    emoji: "🗺️",
-    category: "Web app",
-    description: "Turns real-world satellite imagery, GIS and historical map data into hand-drawn D&D battlemaps and regional maps you can export to virtual tabletops.",
-    tags: ["D&D", "Maps", "Python", "Leaflet"],
-    links: [
-      { label: "Open app", url: "https://realm-cartographer.onrender.com" },
+    id: "3d-printing",
+    title: "3D printing",
+    intro: "Printable toys and gadgets. Models are free to download.",
+    profiles: [
+      { label: "MakerWorld profile", url: "https://makerworld.com/en/@masterpigg" },
+    ],
+    projects: [
+      {
+        title: "Large Customizable Prize Wheel",
+        emoji: "🎡",
+        description: "A big spinning prize wheel you can 3D print and customize. The collection includes accessories.",
+        tags: ["3D print", "Customizable"],
+        links: [
+          { label: "View model", url: "https://makerworld.com/en/models/3274478-large-customizable-prize-wheel#profileId-3713399" },
+          { label: "Collection + accessories", url: "https://makerworld.com/en/collections/34862354-large-customizable-prize-wheel" },
+        ],
+      },
+      // Example, ready for when the Dummy 13 pages are up:
+      // {
+      //   title: "Dummy 13 Heads",
+      //   emoji: "🤖",
+      //   description: "Custom heads for the Dummy 13 printable figure, plus an online tool to design your own.",
+      //   tags: ["3D print", "Dummy 13"],
+      //   links: [
+      //     { label: "Heads on MakerWorld", url: "" },
+      //     { label: "Head Creator (itch.io)", url: "" },
+      //   ],
+      // },
     ],
   },
   {
-    title: "BioGlow Robot Simulator",
-    emoji: "🤖",
-    category: "Web app",
-    description: "A browser simulator for the FIRST LEGO League 2026–27 BioGlow Robot Game. Build or import SPIKE Prime Word Blocks programs and watch a virtual robot run them on the mat.",
-    tags: ["FLL", "Robotics", "Education"],
-    links: [
-      { label: "Try it", url: "https://masterpigg.github.io/fll-bioglow-simulator/" },
-      { label: "Source", url: "https://github.com/masterpigg/fll-bioglow-simulator" },
+    id: "software",
+    title: "Software",
+    intro: "Web apps, tools and games.",
+    profiles: [
+      { label: "GitHub", url: "https://github.com/masterpigg" },
+      // { label: "itch.io", url: "https://masterpigg.itch.io" },
     ],
-  },
-  {
-    title: "Printable Prize Wheel",
-    emoji: "🎡",
-    category: "3D print",
-    description: "A spinning prize wheel you can 3D print. Download the model files from MakerWorld.",
-    tags: ["3D printing"],
-    links: [
-      { label: "View on MakerWorld", url: "https://makerworld.com/en/@masterpigg" },
+    projects: [
+      {
+        title: "Realm Cartographer",
+        emoji: "🗺️",
+        description: "Turns real-world satellite imagery, GIS and historical map data into hand-drawn D&D battlemaps and regional maps you can export to virtual tabletops.",
+        tags: ["D&D", "Maps", "Web app"],
+        links: [
+          { label: "Open app", url: "https://realm-cartographer.onrender.com" },
+        ],
+      },
+      {
+        title: "BioGlow Robot Simulator",
+        emoji: "🤖",
+        description: "A browser simulator for the FIRST LEGO League 2026–27 BioGlow Robot Game. Build or import SPIKE Prime Word Blocks programs and watch a virtual robot run them on the mat.",
+        tags: ["FLL", "Robotics", "Education"],
+        links: [
+          { label: "Try it", url: "https://masterpigg.github.io/fll-bioglow-simulator/" },
+          { label: "Source", url: "https://github.com/masterpigg/fll-bioglow-simulator" },
+        ],
+      },
+      {
+        title: "DIY Gaming Tools",
+        emoji: "🎮",
+        description: "A game-making suite for parents and kids to use together. Draw characters on paper, scan them in, and build a real, playable 2D game with kid-friendly editors.",
+        tags: ["Game dev", "Kids", "Desktop app"],
+        status: "In progress",
+        links: [],
+      },
+      {
+        title: "itch.io games",
+        emoji: "🕹️",
+        description: "A couple of small games, coming soon to itch.io.",
+        tags: ["Games"],
+        status: "Coming soon",
+        links: [],
+      },
     ],
-  },
-  {
-    title: "DIY Gaming Tools",
-    emoji: "🎮",
-    category: "Desktop app",
-    description: "A game-making suite for parents and kids to use together. Draw characters on paper, scan them in, and build a real, playable 2D game with kid-friendly editors.",
-    tags: ["Game dev", "Kids", "Electron"],
-    status: "In progress",
-    links: [
-      // { label: "Download", url: "" },
-    ],
-  },
-  {
-    title: "itch.io games",
-    emoji: "🕹️",
-    category: "Game",
-    description: "A couple of small games, coming soon to itch.io.",
-    tags: ["Games"],
-    status: "Coming soon",
-    links: [],
   },
 ];
 /* ───────────────────────── end of editable section ───────────────────────── */
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-
-document.getElementById("profiles").innerHTML = PROFILES
-  .map(p => `<a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.label)}</a>`).join("");
+const pill = l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`;
 
 function card(p) {
   const thumb = p.image
@@ -202,7 +229,7 @@ function card(p) {
   return `<article class="card">
     <div class="thumb">${thumb}</div>
     <div class="body">
-      <h2>${esc(p.title)}${p.status ? `<span class="status">${esc(p.status)}</span>` : ""}</h2>
+      <h3>${esc(p.title)}${p.status ? `<span class="status">${esc(p.status)}</span>` : ""}</h3>
       <p class="desc">${esc(p.description)}</p>
       <div class="tags">${(p.tags || []).map(t => `<span>${esc(t)}</span>`).join("")}</div>
       ${links ? `<div class="links">${links}</div>` : ""}
@@ -210,17 +237,18 @@ function card(p) {
   </article>`;
 }
 
-const grid = document.getElementById("grid");
-const filters = document.getElementById("filters");
-const categories = ["All", ...new Set(PROJECTS.map(p => p.category).filter(Boolean))];
+document.getElementById("jump").innerHTML = SECTIONS
+  .map(s => `<a href="#${esc(s.id)}">${esc(s.title)}</a>`).join("");
 
-function render(cat) {
-  grid.innerHTML = PROJECTS.filter(p => cat === "All" || p.category === cat).map(card).join("");
-  filters.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.cat === cat));
-}
-filters.innerHTML = categories.map(c => `<button type="button" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
-filters.addEventListener("click", e => { if (e.target.dataset.cat) render(e.target.dataset.cat); });
-render("All");
+document.getElementById("sections").innerHTML = SECTIONS.map(s => `
+  <section class="hobby" id="${esc(s.id)}">
+    <div class="hobby-head">
+      <h2>${esc(s.title)}</h2>
+      ${s.intro ? `<p>${esc(s.intro)}</p>` : ""}
+      <nav class="profiles">${(s.profiles || []).filter(l => l.url).map(pill).join("")}</nav>
+    </div>
+    <div class="grid">${s.projects.map(card).join("")}</div>
+  </section>`).join("");
 
 document.getElementById("year").textContent = new Date().getFullYear();
 </script>
