@@ -10,32 +10,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f5f1;
+    --bg: #eef2f9;
     --card: #ffffff;
-    --text: #1d1d1f;
-    --muted: #5f6368;
-    --border: #e3e1da;
-    --accent: #d9480f;
-    --accent-soft: #fff1e8;
-    --tag-bg: #f0eee8;
-    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.05);
+    --text: #0f1b33;
+    --muted: #4a5873;
+    --border: #d5ddeb;
+    --accent: #1d4ed8;
+    --accent-text: #ffffff;
+    --accent-soft: #e3ebfb;
+    --tag-bg: #e7edf7;
+    --shadow: 0 1px 2px rgba(15,27,51,.05), 0 4px 16px rgba(15,27,51,.07);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #141416;
-      --card: #1e1e22;
-      --text: #ececee;
-      --muted: #a0a0a8;
-      --border: #2e2e34;
-      --accent: #ff8a4c;
-      --accent-soft: #2e1d14;
-      --tag-bg: #2a2a30;
+      --bg: #08111f;
+      --card: #0f1d35;
+      --text: #e6ecf7;
+      --muted: #9aabc8;
+      --border: #1e3256;
+      --accent: #6ea8ff;
+      --accent-text: #08111f;
+      --accent-soft: #13284a;
+      --tag-bg: #172b4d;
       --shadow: none;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #141416; --card: #1e1e22; --text: #ececee; --muted: #a0a0a8;
-    --border: #2e2e34; --accent: #ff8a4c; --accent-soft: #2e1d14; --tag-bg: #2a2a30; --shadow: none;
+    --bg: #08111f; --card: #0f1d35; --text: #e6ecf7; --muted: #9aabc8;
+    --border: #1e3256; --accent: #6ea8ff; --accent-text: #08111f; --accent-soft: #13284a; --tag-bg: #172b4d; --shadow: none;
   }
 
   * { box-sizing: border-box; }
@@ -105,7 +107,7 @@
     padding: 7px 12px; border-radius: 8px;
     border: 1px solid var(--border); color: var(--text);
   }
-  .links a.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .links a.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
   .links a:hover { filter: brightness(1.08); }
 
   footer { margin-top: 48px; color: var(--muted); font-size: .85rem; text-align: center; }
