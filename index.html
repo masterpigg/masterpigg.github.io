@@ -8,14 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<script>
-  // Hide the bits that animate in, but only when motion is allowed. A timeout
-  // un-hides everything if the animation libraries fail to load.
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.documentElement.classList.add("anim");
-    setTimeout(() => document.documentElement.classList.remove("anim"), 3000);
-  }
-</script>
 <style>
   :root {
     --bg: #eef2f9;
@@ -32,7 +24,6 @@
     --shadow: 0 1px 2px rgba(15,27,51,.05), 0 4px 16px rgba(15,27,51,.07);
     --glass: rgba(255,255,255,.78);
     --blob-opacity: .35;
-    --spot: rgba(29,78,216,.12);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -50,24 +41,17 @@
       --shadow: none;
       --glass: rgba(15,29,53,.72);
       --blob-opacity: .45;
-      --spot: rgba(110,168,255,.16);
     }
   }
   :root[data-theme="dark"] {
     --bg: #08111f; --card: #0f1d35; --text: #e6ecf7; --muted: #9aabc8;
     --border: #1e3256; --accent: #6ea8ff; --accent-2: #a78bfa; --accent-3: #22d3ee; --accent-text: #08111f;
     --accent-soft: #13284a; --tag-bg: #172b4d; --shadow: none;
-    --glass: rgba(15,29,53,.72); --blob-opacity: .45; --spot: rgba(110,168,255,.16);
+    --glass: rgba(15,29,53,.72); --blob-opacity: .45;
   }
-
-  /* Lenis smooth scroll */
-  html.lenis, html.lenis body { height: auto; }
-  .lenis.lenis-stopped { overflow: clip; }
-  .lenis.lenis-smooth iframe { pointer-events: none; }
 
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  html.lenis { scroll-behavior: auto; }
   body {
     margin: 0;
     background: var(--bg);
@@ -77,16 +61,13 @@
   }
   ::selection { background: var(--accent); color: var(--accent-text); }
 
-  /* ── Animated background: aurora blobs + particle field ── */
-  .bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-  .blob {
-    position: absolute; width: 55vmax; height: 55vmax; border-radius: 50%;
-    filter: blur(80px); opacity: var(--blob-opacity); will-change: transform;
+  /* ── Static background glow (plain gradients, no blur filters or animation) ── */
+  .bg {
+    position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+    background:
+      radial-gradient(60vmax circle at 0% 0%, color-mix(in srgb, var(--accent) calc(var(--blob-opacity) * 60%), transparent), transparent 70%),
+      radial-gradient(55vmax circle at 100% 10%, color-mix(in srgb, var(--accent-2) calc(var(--blob-opacity) * 50%), transparent), transparent 70%);
   }
-  .blob.b1 { background: var(--accent);   top: -25vmax; left: -15vmax; }
-  .blob.b2 { background: var(--accent-2); top: -10vmax; right: -25vmax; }
-  .blob.b3 { background: var(--accent-3); bottom: -35vmax; left: 20vmax; opacity: calc(var(--blob-opacity) * .7); }
-  #particles { position: absolute; inset: 0; width: 100%; height: 100%; }
   .grain {
     position: absolute; inset: 0; opacity: .05;
     background-image: linear-gradient(var(--text) 1px, transparent 1px), linear-gradient(90deg, var(--text) 1px, transparent 1px);
@@ -95,41 +76,31 @@
     -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 0%, transparent 70%);
   }
 
-  .progress {
-    position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 10;
-    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
-    transform-origin: 0 50%; transform: scaleX(0);
-  }
-
   main { max-width: 1040px; margin: 0 auto; padding: 0 16px 40px; }
 
   /* ── Hero ── */
   header {
-    min-height: min(88vh, 760px); display: flex; flex-direction: column; justify-content: center;
-    padding: 72px 0 40px;
+    display: flex; flex-direction: column;
+    padding: 64px 0 8px;
   }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
     font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
-    border: 1px solid var(--border); background: var(--glass); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); background: var(--glass);
     padding: 6px 12px; border-radius: 999px; margin-bottom: 22px;
   }
-  .eyebrow .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 0 rgba(34,197,94,.6); animation: ping 2s infinite; }
-  @keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); } 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } }
+  .eyebrow .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
   h1 {
     font-family: "Space Grotesk", Inter, sans-serif;
-    font-size: clamp(3rem, 11vw, 7.2rem);
+    font-size: clamp(2.6rem, 8vw, 5rem);
     line-height: .95;
     margin: 0 0 22px;
     letter-spacing: -0.04em;
   }
   .grad {
     background: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 30%, var(--accent-3) 55%, var(--accent) 80%);
-    background-size: 250% 100%;
     -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: shine 6s linear infinite;
   }
-  @keyframes shine { to { background-position: -250% 0; } }
   .intro { color: var(--muted); max-width: 52ch; margin: 0 0 28px; font-size: clamp(1.05rem, 2vw, 1.2rem); }
   .stats { display: flex; gap: 28px; margin: 0 0 30px; flex-wrap: wrap; }
   .stat b {
@@ -141,34 +112,14 @@
   .jump, .profiles { display: flex; flex-wrap: wrap; gap: 10px; }
   .jump a, .profiles a {
     color: var(--text); text-decoration: none; font-weight: 500; font-size: .92rem;
-    border: 1px solid var(--border); background: var(--glass); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); background: var(--glass);
     padding: 8px 16px; border-radius: 999px; display: inline-block;
     transition: border-color .2s, color .2s;
   }
   .jump a:hover, .profiles a:hover { border-color: var(--accent); color: var(--accent); }
 
-  .scroll-hint {
-    margin-top: 48px; align-self: flex-start; color: var(--muted); font-size: .8rem; letter-spacing: .1em;
-    text-transform: uppercase; display: flex; align-items: center; gap: 10px;
-  }
-  .scroll-hint i { width: 1px; height: 36px; background: linear-gradient(var(--muted), transparent); display: block; }
-
-  /* ── Scroll-velocity marquee ── */
-  .marquee {
-    overflow: hidden; margin: 0 calc(50% - 50vw); padding: 18px 0;
-    border-block: 1px solid var(--border); background: var(--glass); backdrop-filter: blur(8px);
-  }
-  .marquee .row { display: flex; width: max-content; will-change: transform; }
-  .marquee .row + .row { margin-top: 6px; }
-  .marquee span {
-    font-family: "Space Grotesk", Inter, sans-serif; font-weight: 600; font-size: clamp(1.4rem, 3.5vw, 2.2rem);
-    white-space: nowrap; padding-right: .9em; letter-spacing: -0.02em;
-  }
-  .marquee .row.ghost span { color: transparent; -webkit-text-stroke: 1px var(--muted); }
-  .marquee em { font-style: normal; color: var(--accent); padding-right: .9em; }
-
   /* ── Sections ── */
-  .hobby { margin-top: 96px; scroll-margin-top: 24px; }
+  .hobby { margin-top: 64px; scroll-margin-top: 24px; }
   .hobby-head { margin-bottom: 26px; }
   .hobby-num {
     font-family: "Space Grotesk", Inter, sans-serif; font-weight: 500; color: var(--accent);
@@ -177,24 +128,17 @@
   .hobby-num::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
   .hobby-head h2 {
     font-family: "Space Grotesk", Inter, sans-serif;
-    font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1; margin: 0 0 12px; letter-spacing: -0.03em;
+    font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1; margin: 0 0 12px; letter-spacing: -0.03em;
   }
   .hobby-head p { color: var(--muted); margin: 0 0 16px; max-width: 60ch; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; perspective: 1200px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
   .card {
     position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 18px;
     box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column;
-    transform-style: preserve-3d; will-change: transform;
-    transition: border-color .3s, box-shadow .3s;
+    transition: border-color .2s, box-shadow .2s, transform .2s;
   }
-  .card:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); box-shadow: 0 18px 50px -20px color-mix(in srgb, var(--accent) 45%, transparent); }
-  /* Spotlight that follows the cursor */
-  .card::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2; opacity: 0; transition: opacity .3s;
-    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--spot), transparent 60%);
-  }
-  .card:hover::before { opacity: 1; }
+  .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); box-shadow: 0 18px 50px -20px color-mix(in srgb, var(--accent) 45%, transparent); }
   .thumb {
     position: relative; aspect-ratio: 16 / 9; overflow: hidden;
     background:
@@ -203,8 +147,9 @@
       var(--accent-soft);
     display: grid; place-items: center; font-size: 3.4rem;
   }
-  .thumb .emoji { display: inline-block; will-change: transform; filter: drop-shadow(0 10px 14px rgba(0,0,0,.18)); }
-  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s; }
+  .thumb .emoji { display: inline-block; transition: transform .2s; }
+  .card:hover .thumb .emoji { transform: scale(1.12); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
   .card:hover .thumb img { transform: scale(1.05); }
   .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
   .body h3 { font-size: 1.15rem; margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
@@ -213,8 +158,7 @@
     font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em;
     color: var(--accent); background: var(--accent-soft); padding: 3px 9px; border-radius: 999px;
   }
-  .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: blink 1.6s ease-in-out infinite; }
-  @keyframes blink { 50% { opacity: .25; } }
+  .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .desc { color: var(--muted); margin: 0; font-size: .95rem; flex: 1; }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .tags span { background: var(--tag-bg); color: var(--muted); font-size: .75rem; padding: 2px 9px; border-radius: 6px; }
@@ -232,7 +176,7 @@
   .links a:not(.primary):hover { border-color: var(--accent); color: var(--accent); }
 
   footer {
-    margin-top: 120px; color: var(--muted); font-size: .85rem;
+    margin-top: 80px; color: var(--muted); font-size: .85rem;
     display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
     border-top: 1px solid var(--border); padding-top: 22px;
   }
@@ -244,44 +188,30 @@
 
   a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-  /* Click sparks */
-  .spark { position: fixed; width: 2px; height: 12px; border-radius: 2px; background: var(--accent); pointer-events: none; z-index: 50; transform-origin: 50% 100%; }
-
-  /* Elements hidden until GSAP reveals them (only when motion is allowed) */
-  html.anim .reveal { visibility: hidden; }
-
   @media (max-width: 560px) {
-    header { min-height: auto; padding-top: 56px; }
-    .scroll-hint { display: none; }
+    header { padding-top: 40px; }
     .stats { gap: 22px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .grad, .status::before, .eyebrow .dot { animation: none; }
     html { scroll-behavior: auto; }
+    .card, .thumb .emoji, .thumb img { transition: none; }
+    .card:hover, .card:hover .thumb .emoji, .card:hover .thumb img { transform: none; }
   }
 </style>
 </head>
 <body>
 <div class="bg" aria-hidden="true">
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
-  <div class="blob b3"></div>
   <div class="grain"></div>
-  <canvas id="particles"></canvas>
 </div>
-<div class="progress" aria-hidden="true"></div>
 
 <main>
   <header>
-    <div class="eyebrow reveal" data-hero><span class="dot"></span>masterpigg · maker &amp; dev</div>
-    <h1 class="reveal" id="title">Things I've <span class="grad">made</span></h1>
-    <p class="intro reveal" id="intro">Software, games and 3D prints. Some are open source and some aren't, but you can try or download all of them from the links below.</p>
-    <div class="stats reveal" data-hero id="stats"></div>
-    <nav class="jump reveal" data-hero id="jump" aria-label="Sections"></nav>
-    <div class="scroll-hint reveal" data-hero aria-hidden="true"><i></i>Scroll</div>
+    <div class="eyebrow"><span class="dot"></span>masterpigg · maker &amp; dev</div>
+    <h1 id="title">Things I've <span class="grad">made</span></h1>
+    <p class="intro" id="intro">Software, games and 3D prints. Some are open source and some aren't, but you can try or download all of them from the links below.</p>
+    <div class="stats" id="stats"></div>
+    <nav class="jump" id="jump" aria-label="Sections"></nav>
   </header>
-
-  <div class="marquee" aria-hidden="true" id="marquee"></div>
 
   <div id="sections"></div>
 
@@ -474,7 +404,7 @@ function card(p) {
     : `<span class="emoji" aria-hidden="true">${p.emoji || "✨"}</span>`;
   const links = (p.links || []).filter(l => l.url).map((l, i) =>
     `<a class="${i === 0 ? "primary" : ""}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("");
-  return `<article class="card reveal">
+  return `<article class="card">
     <div class="thumb">${thumb}</div>
     <div class="body">
       <h3>${esc(p.title)}${p.status ? `<span class="status">${esc(p.status)}</span>` : ""}</h3>
@@ -494,264 +424,22 @@ document.getElementById("stats").innerHTML = [
   [projects.length, "projects"],
   [SECTIONS.length, "hobbies"],
   [projects.filter(p => (p.links || []).some(l => l.url)).length, "ready to try"],
-].map(([n, label]) => `<div class="stat"><b data-count="${n}">${n}</b><span>${label}</span></div>`).join("");
+].map(([n, label]) => `<div class="stat"><b>${n}</b><span>${label}</span></div>`).join("");
 
 document.getElementById("sections").innerHTML = SECTIONS.map((s, i) => `
   <section class="hobby" id="${esc(s.id)}">
     <div class="hobby-head">
-      <div class="hobby-num reveal">${String(i + 1).padStart(2, "0")}</div>
-      <h2 class="reveal">${esc(s.title)}</h2>
-      ${s.intro ? `<p class="reveal">${esc(s.intro)}</p>` : ""}
-      <nav class="profiles reveal">${(s.profiles || []).filter(l => l.url).map(pill).join("")}</nav>
+      <div class="hobby-num">${String(i + 1).padStart(2, "0")}</div>
+      <h2>${esc(s.title)}</h2>
+      ${s.intro ? `<p>${esc(s.intro)}</p>` : ""}
+      <nav class="profiles">${(s.profiles || []).filter(l => l.url).map(pill).join("")}</nav>
     </div>
     <div class="grid">${s.projects.map(card).join("")}</div>
   </section>`).join("");
 
-// Marquee rows: hobbies and project names, then every tag in outline text.
-// Each row repeats its items so it can loop seamlessly.
-const MARQUEE_REPEAT = 4;
-const marqueeRow = (items, cls) => `<div class="row ${cls}">${
-  Array(MARQUEE_REPEAT).fill(items.map(t => `<span>${esc(t)}</span><em>✦</em>`).join("")).join("")}</div>`;
-document.getElementById("marquee").innerHTML =
-  marqueeRow([...SECTIONS.map(s => s.title), ...projects.filter(p => !p.status).map(p => p.title)], "") +
-  marqueeRow([...new Set(projects.flatMap(p => p.tags || []))], "ghost");
-
 document.getElementById("year").textContent = new Date().getFullYear();
 
-const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-document.getElementById("top").addEventListener("click", () => {
-  if (window.lenis) window.lenis.scrollTo(0, { duration: 1.6 });
-  else window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
-});
-
-// Spotlight: a soft glow on each card that follows the cursor.
-document.querySelectorAll(".card").forEach(card => {
-  card.addEventListener("pointermove", e => {
-    const r = card.getBoundingClientRect();
-    card.style.setProperty("--mx", `${e.clientX - r.left}px`);
-    card.style.setProperty("--my", `${e.clientY - r.top}px`);
-  });
-});
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
-
-<script>
-/* ─────────────────────────────────────────────────────────────
-   Motion: GSAP + ScrollTrigger + SplitText, Lenis smooth scroll,
-   and vanilla takes on React Bits effects (Particles, SplitText,
-   BlurText, CountUp, ScrollVelocity, SpotlightCard, TiltedCard,
-   Magnet, ClickSpark). Skipped entirely for reduced motion.
-   ───────────────────────────────────────────────────────────── */
-(() => {
-  const root = document.documentElement;
-  const showAll = () => root.classList.remove("anim");
-  if (reduceMotion || !window.gsap || !window.ScrollTrigger) { showAll(); return; }
-
-  const hasSplit = !!window.SplitText;
-  gsap.registerPlugin(ScrollTrigger, ...(hasSplit ? [SplitText] : []));
-  const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
-  const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
-
-  // ── Lenis smooth scrolling, driven by GSAP's ticker ──
-  let lenis = null;
-  if (window.Lenis) {
-    lenis = window.lenis = new Lenis({ autoRaf: false, anchors: { offset: -24 } });
-    lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add(t => lenis.raf(t * 1000));
-    gsap.ticker.lagSmoothing(0);
-  }
-
-  // ── Aurora blobs drifting in the background ──
-  $$(".blob").forEach((b, i) => {
-    gsap.to(b, {
-      x: () => gsap.utils.random(-12, 12) + "vw", y: () => gsap.utils.random(-10, 10) + "vh",
-      scale: () => gsap.utils.random(.85, 1.2), duration: 14 + i * 3,
-      ease: "sine.inOut", repeat: -1, yoyo: true, repeatRefresh: true,
-    });
-  });
-
-  // ── Particle field with depth, mouse parallax and links between near dots ──
-  const canvas = document.getElementById("particles");
-  const ctx = canvas.getContext("2d");
-  let W = 0, H = 0, dots = [], color = "";
-  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-  const readColor = () => { color = getComputedStyle(root).getPropertyValue("--accent").trim(); };
-  const sizeCanvas = () => {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = innerWidth; H = innerHeight;
-    canvas.width = W * dpr; canvas.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const n = Math.round(Math.min(90, (W * H) / 15000));
-    dots = Array.from({ length: n }, () => ({
-      x: Math.random() * W, y: Math.random() * H, z: gsap.utils.random(.25, 1),
-      vx: gsap.utils.random(-.15, .15), vy: gsap.utils.random(-.15, .15),
-    }));
-  };
-  readColor(); sizeCanvas();
-  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readColor);
-  addEventListener("resize", sizeCanvas);
-  addEventListener("pointermove", e => { mouse.tx = e.clientX / W - .5; mouse.ty = e.clientY / H - .5; });
-  gsap.ticker.add(() => {
-    mouse.x += (mouse.tx - mouse.x) * .05; mouse.y += (mouse.ty - mouse.y) * .05;
-    const sy = scrollY;
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = ctx.strokeStyle = color;
-    const pts = dots.map(d => {
-      d.x = (d.x + d.vx + W) % W; d.y = (d.y + d.vy + H) % H;
-      const px = d.x - mouse.x * 40 * d.z;
-      const py = ((d.y - sy * .12 * d.z - mouse.y * 40 * d.z) % H + H) % H;
-      return { x: px, y: py, z: d.z };
-    });
-    for (let i = 0; i < pts.length; i++) {
-      const a = pts[i];
-      ctx.globalAlpha = .25 + a.z * .45;
-      ctx.beginPath(); ctx.arc(a.x, a.y, .6 + a.z * 1.6, 0, Math.PI * 2); ctx.fill();
-      for (let j = i + 1; j < pts.length; j++) {
-        const b = pts[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
-        if (d2 < 12000) {
-          ctx.globalAlpha = (1 - d2 / 12000) * .18 * Math.min(a.z, b.z);
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-        }
-      }
-    }
-    ctx.globalAlpha = 1;
-  });
-
-  // ── Scroll progress bar ──
-  gsap.to(".progress", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: .3 } });
-
-  // ── Hero intro: SplitText chars, BlurText words, CountUp stats ──
-  const fontsReady = Promise.race([document.fonts ? document.fonts.ready : null, new Promise(r => setTimeout(r, 800))]);
-  fontsReady.then(() => {
-    const title = document.getElementById("title");
-    const titleText = title.firstChild;  // "Things I've "
-    const wrap = document.createElement("span");
-    wrap.textContent = titleText.textContent;
-    title.replaceChild(wrap, titleText);
-
-    const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-    if (hasSplit) {
-      const chars = SplitText.create(wrap, { type: "chars", tag: "span" }).chars;
-      const words = SplitText.create("#intro", { type: "words", tag: "span" }).words;
-      tl.from(chars, { autoAlpha: 0, yPercent: 80, rotateX: -80, filter: "blur(10px)", duration: 1.2, stagger: .04 }, .1)
-        .from(".grad", { autoAlpha: 0, scale: .6, filter: "blur(16px)", duration: 1.4, ease: "elastic.out(1, .6)" }, .5)
-        .from(words, { autoAlpha: 0, y: 14, filter: "blur(8px)", duration: .9, stagger: .025 }, .6);
-    } else {
-      tl.from("#title, #intro", { autoAlpha: 0, y: 30, duration: 1, stagger: .15 });
-    }
-    tl.from("[data-hero]", { autoAlpha: 0, y: 24, duration: 1, stagger: .1 }, .2);
-    $$("[data-count]").forEach((el, i) => {
-      const o = { v: 0 };
-      el.textContent = "0";
-      tl.to(o, { v: +el.dataset.count, duration: 1.6, ease: "power2.out",
-        onUpdate: () => { el.textContent = Math.round(o.v); } }, .9 + i * .1);
-    });
-    // Hero drifts up and fades a little as you scroll past it
-    gsap.to("header", { yPercent: -12, autoAlpha: .35, ease: "none",
-      scrollTrigger: { trigger: "header", start: "top top", end: "bottom top", scrub: true } });
-
-    // ── Sections: heading chars rise out of a mask, then cards stagger in ──
-    $$(".hobby").forEach(sec => {
-      const h2 = sec.querySelector("h2");
-      const head = gsap.timeline({ scrollTrigger: { trigger: sec, start: "top 82%" }, defaults: { ease: "power4.out" } });
-      head.from(sec.querySelector(".hobby-num"), { autoAlpha: 0, x: -30, duration: .8 });
-      if (hasSplit) {
-        head.from(SplitText.create(h2, { type: "chars", mask: "chars", tag: "span" }).chars,
-          { yPercent: 110, duration: .9, stagger: .025 }, "<.05");
-      } else {
-        head.from(h2, { autoAlpha: 0, y: 30, duration: .9 }, "<.05");
-      }
-      head.from($$(".hobby-head > p, .hobby-head > .profiles", sec), { autoAlpha: 0, y: 20, duration: .8, stagger: .1 }, "<.3");
-
-      gsap.from($$(".card", sec), {
-        autoAlpha: 0, y: 70, rotateX: -14, transformPerspective: 900, duration: 1.1, ease: "power3.out", stagger: .12,
-        scrollTrigger: { trigger: sec.querySelector(".grid"), start: "top 88%" },
-      });
-    });
-
-    showAll();
-    ScrollTrigger.refresh();
-  });
-
-  // ── Floating emoji ──
-  $$(".emoji").forEach(e => {
-    gsap.to(e, { yPercent: -10, rotation: gsap.utils.random(-6, 6), duration: gsap.utils.random(1.8, 2.6),
-      ease: "sine.inOut", repeat: -1, yoyo: true, delay: Math.random() });
-  });
-
-  // ── ScrollVelocity marquee: drifts on its own, speeds up and flips with your scroll ──
-  const rows = $$(".marquee .row").map((row, i) => ({ row, x: 0, dir: i % 2 ? 1 : -1, w: 0 }));
-  const measure = () => rows.forEach(r => { r.w = r.row.scrollWidth / MARQUEE_REPEAT; });
-  measure(); addEventListener("resize", measure);
-  document.fonts && document.fonts.ready.then(measure);
-  let speed = 1, sign = 1, lastY = scrollY;
-  gsap.ticker.add((time, dt) => {
-    const v = lenis ? lenis.velocity : scrollY - lastY;
-    lastY = scrollY;
-    if (Math.abs(v) > .5) sign = v > 0 ? 1 : -1;
-    speed += (1 + Math.min(Math.abs(v), 80) * .12 - speed) * .08;
-    rows.forEach(r => {
-      if (!r.w) return;
-      r.x = gsap.utils.wrap(-r.w, 0, r.x + r.dir * sign * speed * 40 * (dt / 1000));
-      r.row.style.transform = `translate3d(${r.x}px,0,0)`;
-    });
-  });
-
-  if (finePointer) {
-    // ── TiltedCard: cards lean toward the cursor; the emoji follows ──
-    $$(".card").forEach(card => {
-      const rx = gsap.quickTo(card, "rotationX", { duration: .5, ease: "power3" });
-      const ry = gsap.quickTo(card, "rotationY", { duration: .5, ease: "power3" });
-      const emoji = card.querySelector(".emoji");
-      const ex = emoji && gsap.quickTo(emoji, "x", { duration: .6, ease: "power3" });
-      const ey = emoji && gsap.quickTo(emoji, "y", { duration: .6, ease: "power3" });
-      card.addEventListener("pointerenter", () => {
-        gsap.to(card, { scale: 1.02, duration: .4, ease: "power3.out", transformPerspective: 900 });
-        emoji && gsap.to(emoji, { scale: 1.25, duration: .5, ease: "back.out(3)" });
-      });
-      card.addEventListener("pointermove", e => {
-        const r = card.getBoundingClientRect();
-        const px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
-        rx(-py * 9); ry(px * 11);
-        if (emoji) { ex(px * 36); ey(py * 24); }
-      });
-      card.addEventListener("pointerleave", () => {
-        rx(0); ry(0);
-        gsap.to(card, { scale: 1, duration: .5, ease: "power3.out" });
-        if (emoji) { ex(0); ey(0); gsap.to(emoji, { scale: 1, duration: .5 }); }
-      });
-    });
-
-    // ── Magnet: buttons pull toward the cursor ──
-    $$(".links a, .jump a, .profiles a, .top-btn").forEach(el => {
-      const xTo = gsap.quickTo(el, "x", { duration: .4, ease: "power3" });
-      const yTo = gsap.quickTo(el, "y", { duration: .4, ease: "power3" });
-      el.addEventListener("pointermove", e => {
-        const r = el.getBoundingClientRect();
-        xTo((e.clientX - r.left - r.width / 2) * .35);
-        yTo((e.clientY - r.top - r.height / 2) * .35);
-      });
-      el.addEventListener("pointerleave", () => { xTo(0); yTo(0); });
-    });
-  }
-
-  // ── ClickSpark: a little burst wherever you click ──
-  addEventListener("pointerdown", e => {
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2, s = document.createElement("div");
-      s.className = "spark";
-      s.style.left = `${e.clientX - 1}px`; s.style.top = `${e.clientY - 12}px`;
-      document.body.appendChild(s);
-      gsap.fromTo(s, { rotation: a * 180 / Math.PI + 90, x: 0, y: 0, scaleY: 1, opacity: 1 },
-        { x: Math.cos(a) * 28, y: Math.sin(a) * 28, scaleY: 0, opacity: 0, duration: .5, ease: "power2.out",
-          onComplete: () => s.remove() });
-    }
-  });
-})();
+document.getElementById("top").addEventListener("click", () => window.scrollTo({ top: 0 }));
 </script>
 </body>
 </html>
