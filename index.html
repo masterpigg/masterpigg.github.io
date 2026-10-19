@@ -289,6 +289,7 @@ const SECTIONS = [
       {
         title: "Large Customizable Prize Wheel",
         emoji: "🎡",
+        image: "img/prize-wheel.webp",
         description: "A big spinning prize wheel you can 3D print and customize. The collection includes accessories. A 100% 3D printed version is coming soon.",
         tags: ["3D print", "Customizable"],
         links: [
@@ -299,6 +300,7 @@ const SECTIONS = [
       {
         title: "Cookie Run: Kingdom Soul Jams",
         emoji: "🍪",
+        image: "img/soul-jams.webp",
         description: "Printable Soul Jams from Cookie Run: Kingdom, ready for display or cosplay.",
         tags: ["3D print", "Cookie Run", "Fan art"],
         links: [
@@ -324,6 +326,7 @@ const SECTIONS = [
       {
         title: "ARINC-429 Encoder/Decoder Tool",
         emoji: "✈️",
+        image: "img/arinc-429.webp",
         description: "A printable octal to hex encoder/decoder card for ARINC-429 labels, with a handy diagram of the 32-bit ARINC-429 word printed right on it.",
         tags: ["3D print", "Avionics", "ARINC-429"],
         status: "Coming soon",
@@ -332,6 +335,7 @@ const SECTIONS = [
       {
         title: "MIL-STD-1553 MUX Encoder/Decoder Tool",
         emoji: "🛰️",
+        image: "img/mil-std-1553.webp",
         description: "A printable encoder/decoder card with spin wheels for each digit of a MIL-STD-1553 command word. Dial in a hex word to read the RT address, transmit/receive direction, subaddress and word count in the window, or set the fields to find the hex word.",
         tags: ["3D print", "Avionics", "MIL-STD-1553"],
         status: "Coming soon",
@@ -401,7 +405,7 @@ const pill = l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(
 
 function card(p) {
   const thumb = p.image
-    ? `<img src="${esc(p.image)}" alt="${esc(p.title)} screenshot" loading="lazy">`
+    ? `<img src="${esc(p.image)}" alt="${esc(p.title)} render" loading="lazy">`
     : `<span class="emoji" aria-hidden="true">${p.emoji || "✨"}</span>`;
   const links = (p.links || []).filter(l => l.url).map((l, i) =>
     `<a class="${i === 0 ? "primary" : ""}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("");
